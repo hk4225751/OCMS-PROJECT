@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Areas/Visitors/Views/Shared/Web_Layout.cshtml";
+}
+
+<div id="loaduserprofile"></div>
+<div id="loaduserComplaints"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        loadUserProfile();
+        loadUserComplaints();
+    });
+
+    function loadUserProfile() {
+        $.ajax({
+            url: '/Users/Profile/LoadUserProfile',
+            type: 'POST',
+            success: function (response) {
+                $('#loaduserprofile').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error('Profile error:', error);
+                alert('Error loading profile: ' + error);
+            }
+        });
+    }
+
+    function loadUserComplaints() {
+        $.ajax({
+            url: '/Users/Profile/LoadUserComplaints',
+            type: 'POST',
+            success: function (response) {
+                $('#loaduserComplaints').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error('Complaints error:', error);
+                alert('Error loading complaints: ' + error);
+            }
+        });
+    }
+
+    // Update profile picture (DP)
+    function UpdateUserProfileDp() {
+        var UserImageData = new FormData(document.getElementById('frmuserprofiledp'));
+        $.ajax({
+            url: '/Users/Profile/UpdateUserProfilePic',
+            type: 'POST',
+            data: UserImageData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    alert('Profile picture updated successfully!');
+                    loadUserProfile(); // Refresh profile to show new image
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Update DP error:', error);
+                alert('Error updating profile picture: ' + error);
+            }
+        });
+    }
+
+    // Update bio data (name, email, phone, address)
+    function UpdateUsrBioData() {
+        var UserBioData = new FormData(document.getElementById('frmUserBioData'));
+        $.ajax({
+            url: '/Users/Profile/UpdateProfile', // using existing action
+            type: 'POST',
+            data: UserBioData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                alert('Profile updated successfully!');
+                loadUserProfile(); // Refresh profile to show updated data
+            },
+            error: function (xhr, status, error) {
+                console.error('Update Bio Data error:', error);
+                alert('Error updating profile: ' + error);
+            }
+        });
+    }
+
+    function UpdateUsrBioData() {
+        var formData = {
+            FullName: $('input[name="FullName"]').val(),
+            Email: $('input[name="Email"]').val(),
+            ContactNum: $('input[name="ContactNum"]').val(),
+            Address: $('input[name="Address"]').val()
+        };
+
+        $.ajax({
+            url: '/Users/Profile/UpdateUserBioData',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    loadUserProfile(); // Refresh profile
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Update Bio error:', error);
+                alert('Error updating profile: ' + error);
+            }
+        });
+    }
+
+
+
+
+</script>

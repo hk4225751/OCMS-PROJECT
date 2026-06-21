@@ -1,0 +1,23 @@
+﻿@model OCMS_project.Models.Complaints
+
+@if (Model != null)
+{
+    <div id="statusCard" class="status-card">
+        <h3>Complaint Id @Model.TrackingId</h3>
+        <p><strong>Title:</strong> @Model.Complaint_Title</p>
+        <p><strong>Category:</strong> @(Model.Category?.Cat_Name ?? "N/A")</p>
+        <p>
+            <strong>Status:</strong>
+            <span class="status pending">
+                @Model.status
+            </span>
+        </p>
+        <p><strong>Created At:</strong> @Model.ComplaintDate</p>
+    </div>
+}
+
+
+else
+{
+    <p>No Recod Found</p>
+}

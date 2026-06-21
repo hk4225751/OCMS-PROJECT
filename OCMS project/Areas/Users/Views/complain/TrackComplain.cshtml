@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "TrackComplain";
+    Layout = "~/Areas/Visitors/Views/Shared/Web_Layout.cshtml";
+}
+
+<!-- Track Complaint Section -->
+<section class="form-container fade-in">
+    <h2>Track Your Complaint</h2>
+    <p>Enter your complaint ID below to check the current status.</p>
+
+    <form action="#" method="POST" class="complaint-form" id="trackForm">
+        <label for="complaintId">Complaint ID</label>
+        <input type="text" id="complaintId" name="complaintId" placeholder="Enter your complaint ID" required>
+        <button type="button" class="btn" onclick="TrackComplaint()">Track Complaint</button>
+    </form>
+    <div id="trackcomplainResult"></div>
+</section>
+
+<!-- Option A: Use a CDN (always works) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function TrackComplaint() {   // Capital 'T'
+        var trackingId = $('#complaintId').val();
+        $.ajax({
+            url: '/Users/complain/TrackComplaintPartial',
+            type: 'GET',
+            data: { trackingId: trackingId },
+            success: function (response) {
+                if (response && response.trim() !== "") {
+                    $('#trackcomplainResult').html(response);
+                } else {
+                    $('#trackcomplainResult').html('<p>No complaint found with the provided ID.</p>');
+                }
+            },
+            error: function () {
+                alert("Error tracking complaint.");
+            }
+        });
+    }
+
+</script>

@@ -1,0 +1,78 @@
+﻿@model OCMS_project.DTO_s.UseraProfiledto
+
+<!-- Profile Section -->
+<section class="profile-section">
+    <div class="profile-container">
+        @Html.HiddenFor(x => x.UserId)
+
+        <!-- User Info -->
+        <div class="profile-top">
+            <!-- Left: Image Form -->
+            <form id="frmuserprofiledp" enctype="multipart/form-data">
+                <div class="profile-left">
+                    <img id="avatarPreview"
+                         src="@Model.ImageUrl"
+                         alt="User Avatar"
+                         class="profile-avatar"
+                         onerror="this.src='https://i.pravatar.cc/150?img=7'" />
+
+                    <input type="file" id="ProfileImage" name="ImageFile" accept="image/*" class="d-none" onchange="previewimage(event)" />
+
+                    <div class="mt-2">
+                        <button type="button"
+                                class="btn btn-outline-primary btn-sm"
+                                onclick="document.getElementById('ProfileImage').click()">
+                            <i class="..."></i> Change Profile Picture
+                        </button>
+                    </div>
+
+                    <h2>@Model.FullName</h2>
+                    <p>Member since: Jan 2024</p>
+
+                    <div class="mt-2">
+                        <button class="btn btn-primary" type="button" onclick="UpdateUserProfileDp()">Update Profile Picture</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Right: Editable Form -->
+            <div class="profile-right">
+                <h3>Edit Profile</h3>
+                <form id="frmUserBioData">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="FullName" value="@Model.FullName" />
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="Email" value="@Model.Email" />
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" name="ContactNum" value="@Model.ContactNum" />
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" name="Address" value="@Model.Address" />
+                    </div>
+                    <button type="button" onclick="UpdateUsrBioData()" class="btn">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    function previewimage(event) {
+        const input = event.target;
+        const preview = document.getElementById("avatarPreview");
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

@@ -1,0 +1,71 @@
+﻿@model OCMS_project.DTO_s.Complaint.ComplaintDto
+@using OCMS_project.Services
+@{
+    ViewBag.Title = "Submit Complaint";
+    Layout = "~/Areas/Visitors/Views/Shared/Web_Layout.cshtml";
+
+    var listcate = CategoryService.GetAllCategories();
+}
+
+<section class="form-container fade-in">
+    <h2>Submit a Complaint</h2>
+    <p>Please fill out the form below to register your complaint.</p>
+
+    <form id="frmComplaint" enctype="multipart/form-data" class="complaint-form">
+
+        <label for="title">Complaint Title</label>
+        <input type="text" id="title" name="Complaint_Title" placeholder="Enter complaint title" required>
+
+        <label for="category">Category</label>
+        <select name="Cat_Id">
+
+            <option>--Select Category--</option>
+            @foreach (var item in listcate)
+            {
+
+
+                <option value="@item.Cat_Id">@item.Cat_Name</option>
+
+
+            }
+
+        </select>
+
+        <label for="Complaint_Description">Complaint Description</label>
+        <textarea id="Complaint_Description"
+                  name="Complaint_Description"></textarea>
+
+        <label for="e">Upload Image (optional)</label>
+        <input type="file" id="i" name="File" accept="image/*">
+        <button onclick="SaveComplaint()" type="button" class="btn btn-primary"> Submit Complaint</button>
+    </form>
+</section>
+
+
+<script src="~/adminassets/assets/js/jquery.min.js"></script>
+    
+<script>
+    function SaveComplaint() {
+        var form = document.getElementById('frmComplaint'); // DOM element
+        var formData = new FormData(form);
+    $.ajax({
+        url: '/Users/complain/tosuubmitcomplaint',
+
+        type: 'Post',
+        contentType: false,
+        processData: false,
+        data: formData,
+        success: function (response) {
+            if (response == 1) {
+                alert("Complaint Submit Successfully")
+                location.reload();       
+            }
+            if (response == 2) {
+
+                window.location.href = "/User/Complaint/StatusView"
+            }
+        }
+    })
+}
+
+</script>

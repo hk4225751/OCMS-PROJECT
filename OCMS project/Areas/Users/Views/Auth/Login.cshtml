@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Areas/Visitors/Views/Shared/Web_Layout.cshtml";
+}
+
+
+<section class="auth-section">
+    <div class="auth-container">
+        <h2>Welcome Back 👋</h2>
+        <p>Please log in to continue</p>
+        <form id="frmlogin">
+            <input type="email" placeholder="Email Address" name="Email" required>
+            @*<input type="text" placeholder="Username" name="UserName" required>*@
+            <input type="password" placeholder="Password" name="Password" required>
+            <button type="button" onclick="logincheck()" class="btn">Login</button>
+        </form>
+        <p class="auth-switch">Don’t have an account? <a href="/Users/Auth/Register">Register</a></p>
+    </div>
+</section>
+
+
+<script src="~/adminassets/assets/js/jquery.min.js"></script>
+
+<script>
+
+    function logincheck() {
+        var email = $('input[name="Email"]').val();
+        var password = $('input[name="Password"]').val();
+
+        if (!email || !password) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        $.ajax({
+            url: '/Users/Auth/Logincheck',
+            type: 'POST',
+            data: {
+                Email: email,
+                Password: password
+            },
+            success: function (response) {
+
+
+                if (response === 0) {
+                  
+                    // Login successful
+                    alert('Login successful!');
+                    window.location.href = '/Visitors/Visitor/Index';
+                }
+                else if (response === 1) {
+                    // Account pending or not active
+                    alert('Your account is pending activation. Please contact the administrator.');
+                    location.reload();
+                }
+                else if (response === 2) {
+                    // Invalid credentials
+                    alert('Your Account is has a Warning . you have 2 more chances after that your account will be suspended . Cntact to admin so he/she will again make your account active');
+                    window.location.href = '/Visitors/Visitor/Index';
+                }
+                else if (response === 3) {
+                    // Invalid credentials
+                    alert('Your Account has been Suspended ');
+                    location.reload();
+                }
+                else if (response === 4) {
+                    //// Invalid credentials
+                    alert('Invalid Credential');
+                    location.reload();
+
+
+                    //// Login successful
+                    //alert('Login successful!');
+                    //window.location.href = '/Visitors/Visitor/Index';
+                }
+            },
+            error: function () {
+                console.error('Error occurred');
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+    }
+</script>

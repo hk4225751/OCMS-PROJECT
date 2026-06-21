@@ -1,0 +1,57 @@
+﻿@model OCMS_project.DTO_s.UserstatusDTO 
+
+@{
+    Layout = "~/Areas/Visitors/Views/Shared/Web_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4 p-4 text-center">
+
+        @if (Model.UserAccountStatus == OCMS_project.Enums.AccountStatusEnums.Pending)
+        {
+            <div class="text-warning">
+                <i class="fas fa-clock fa-4x mb-3"></i>
+                <h2>Account Under Review</h2>
+                <p>
+                    Your account is currently pending approval.
+                    You cannot submit complaints until verification is complete.
+                </p>
+            </div>
+        }
+
+
+
+        @if (Model.UserAccountStatus == OCMS_project.Enums.AccountStatusEnums.Suspended)
+        {
+            <div class="text-danger">
+                <i class="fas fa-user-lock fa-4x mb-3"></i>
+                <h2>Account Suspended</h2>
+                <p>
+                    Your account has been temporarily suspended.
+                    Please contact support for more information.
+                </p>
+            </div>
+        }
+
+
+       
+
+        @if (Model.UserAccountStatus == OCMS_project.Enums.AccountStatusEnums.Warning)
+        {
+            <div class="text-warning">
+                <i class="fas fa-exclamation-triangle fa-4x mb-3"></i>
+                <h2>Warning Notice</h2>
+                <p>
+                    Your account has received a warning.
+                    Please follow community guidelines.
+                </p>
+
+                <a href="/Complaint/Create"
+                   class="btn btn-warning mt-3">
+                    Continue Anyway
+                </a>
+            </div>
+        }
+
+    </div>
+</div>

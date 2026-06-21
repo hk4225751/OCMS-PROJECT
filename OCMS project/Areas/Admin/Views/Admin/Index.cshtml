@@ -1,0 +1,314 @@
+﻿
+@model List<OCMS_project.Models.Users>
+@using OCMS_project.Enums
+
+
+
+@{
+    ViewBag.Title = "User Management";
+    Layout = "~/Areas/Visitors/Views/Shared/Web_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>User Management | Admin Dashboard</title>
+    <!-- Google Fonts: Inter for modern, clean sans-serif -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (free icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* subtle cool gray background, matches image aesthetic */
+        body {
+            background: rgb(28, 30, 38);
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            padding: 2rem 1.5rem;
+            color: #0f172a;
+        }
+
+        /* card container – replicates the exact elevated table design from the image */
+        .table-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+            overflow-x: auto;
+            transition: all 0.2s ease;
+            padding: 2rem;
+        }
+
+        .table-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 2rem;
+        }
+
+        /* custom scroll for better UX */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+            background-color: #eef2f6;
+            border-radius: 20px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+
+        /* actual table style – border collapse, rounded corners, clean whitespace */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+            /* header styling – exactly matching modern light-gray background */
+            .data-table thead tr {
+                background: #f9fafb;
+                border-bottom: 1px solid #e9edf2;
+            }
+
+            .data-table th {
+                text-align: left;
+                padding: 1rem 1.25rem;
+                font-weight: 600;
+                font-size: 0.85rem;
+                letter-spacing: 0.02em;
+                text-transform: uppercase;
+                color: #475569;
+                background-color: #f9fafb;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            /* body rows – border bottom separation, clean vertical rhythm */
+            .data-table td {
+                padding: 1rem 1.25rem;
+                border-bottom: 1px solid #f0f2f5;
+                vertical-align: middle;
+                background-color: #ffffff;
+                color: #1e293b;
+                font-weight: 450;
+            }
+
+            /* remove bottom border from last row for cleaner look */
+            .data-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* subtle hover state (like interactive dashboard) */
+            .data-table tbody tr:hover td {
+                background-color: #fefdf8;
+                transition: background 0.2s ease;
+            }
+
+            /* specific column styling */
+            .data-table .name-cell {
+                font-weight: 600;
+                color: #0f172a;
+                letter-spacing: -0.2px;
+            }
+
+        /* email column: no wrap on small screens? but allows wrap */
+        .email-cell {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #334155;
+            letter-spacing: -0.2px;
+            word-break: break-all;
+        }
+
+        /* status dropdown styling */
+        .status-dropdown {
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            background: #ffffff;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .status-dropdown:hover {
+                border-color: #0f172a;
+                box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+            }
+
+            .status-dropdown:focus {
+                outline: none;
+                border-color: #0f172a;
+                box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
+            }
+
+        /* status badge styling */
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-warning {
+            background: #fed7aa;
+            color: #92400e;
+        }
+
+        .status-suspended {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* left alignment for all columns */
+        .data-table td,
+        .data-table th {
+            text-align: left;
+        }
+
+        /* password column styling */
+        .password-cell {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #64748b;
+            letter-spacing: 0.1em;
+        }
+
+        /* responsive adjustments */
+
+        .body {
+            padding: 1rem;
+        }
+
+        .table-container {
+            padding: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.875rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .table-title {
+            font-size: 1.3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="table-container">
+        <h1 class="table-title">User Management Dashboard</h1>
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Account Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td class="name-cell">@user.FullName</td>
+                            <td class="UserName-cell">@user.UserName</td>
+                            <td class="email-cell">@user.Email</td>
+                            <td class="password-cell">@user.Password</td>
+                            <td>
+                                <select class="status-dropdown" onchange="updateAccountStatus('@user.UserId', this.value)">
+                                    <option value="0" selected="@(user.AccountStatus == AccountStatusEnums.Active)">Active</option>
+                                    <option value="1" selected="@(user.AccountStatus == AccountStatusEnums.Pending)">Pending</option>
+                                    <option value="2" selected="@(user.AccountStatus == AccountStatusEnums.Warning)">Warning</option>
+                                    <option value="3" selected="@(user.AccountStatus == AccountStatusEnums.Suspended)">Suspended</option>
+                                </select>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div style="padding: 2rem; text-align: center; color: #64748b;">
+                <p>No users found in the system.</p>
+            </div>
+        }
+    </div>
+</body>
+</html>
+<!-- jQuery (required for $.ajax) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- SweetAlert2 CSS + JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+<script src="~/adminassets/assets/js/jquery.min.js"></script>
+<script>
+    function updateAccountStatus(userId, statusValue) {
+        $.ajax({
+            type: 'POST',
+            url: '/Admin/Admin/UpdateAccountStatus',
+            data: {
+                userId: userId,
+                accountStatus: statusValue
+            },
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: response.message,
+                        confirmButtonColor: '#3085d6'
+                    }).then(() => {
+                        location.reload(); // Refresh the page to show updated status
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message
+                    });
+                    // Optionally revert dropdown to original value
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'Could not update status. Please try again.'
+                });
+            }
+        });
+    }
+
+
+</script>
+

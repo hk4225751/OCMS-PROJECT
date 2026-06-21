@@ -1,0 +1,38 @@
+﻿@model List<OCMS_project.DTO_s.UserComplaintsdto>
+
+<!-- Complaint Records -->
+<section class="profile-section">
+    <div class="profile-container">
+        <div class="complaint-records">
+            <h3>My Complaints</h3>
+            <table>
+               
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.TrackingId</td>
+                            <td>@item.Complaint_Title</td>
+                            <td>@(item.Category?.Cat_Name ?? "N/A")</td>
+                            <td>@item.Complaint_Description</td>
+                            <td > <span class="status pending">@item.status</span></td>
+                            <td>@item.ComplaintDate.ToString("yyyy-MM-dd")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</section>
